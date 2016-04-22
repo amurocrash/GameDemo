@@ -1,0 +1,1 @@
+include ':app', ':gamesdkcore', ':gamesdklib', ':sdkbilling', ':sdkmarketing', ':sdkadvertisement'
