@@ -1,4 +1,4 @@
-package com.cngame.gamesdklib.http_async.mock;
+package com.cngame.gamesdklib.http.mock;
 
 /**
  * Created by Amuro on 2016/3/29.

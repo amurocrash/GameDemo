@@ -1,16 +1,11 @@
-package com.cngame.gamesdklib.http_async.urlParser;
+package com.cngame.gamesdklib.http.urlParser;
+
+import com.cngame.gamesdklib.http.core.HttpConstants;
 
 public class URLData
 {
-    public static final int GET = 0x01;
-    public static final int POST = 0x02;
-
-    public static final int JSON = 0x01;
-    public static final int XML = 0x02;
-    public static final int STRING = 0x03;
-
-    private static final int DEFAULT_METHOD = GET;
-    private static final int DEFAULT_RESPONSE_TYPE = JSON;
+    private static final int DEFAULT_METHOD = HttpConstants.GET;
+    private static final int DEFAULT_RESPONSE_TYPE = HttpConstants.JSON;
 
     private String key;
     private String url;
@@ -83,11 +78,11 @@ public class URLData
     {
         if ("post".equals(method))
         {
-            this.method = POST;
+            this.method = HttpConstants.POST;
             return;
         }
 
-        this.method = GET;
+        this.method = HttpConstants.GET;
     }
 
     public int getResponseType()
@@ -104,15 +99,15 @@ public class URLData
     {
         if ("json".equals(responseType))
         {
-            this.responseType = JSON;
+            this.responseType = HttpConstants.JSON;
         }
         else if ("xml".equals(responseType))
         {
-            this.responseType = XML;
+            this.responseType = HttpConstants.XML;
         }
         else if ("string".equals(responseType))
         {
-            this.responseType = STRING;
+            this.responseType = HttpConstants.STRING;
         }
         else
         {

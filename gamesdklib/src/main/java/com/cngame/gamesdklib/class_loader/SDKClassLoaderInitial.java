@@ -5,21 +5,14 @@ import android.os.Environment;
 import android.text.TextUtils;
 
 import com.alibaba.fastjson.JSONArray;
-import com.cngame.gamesdklib.http_async.core.HttpError;
-import com.cngame.gamesdklib.http_async.core.HttpHelper;
+import com.cngame.gamesdklib.http.HttpSyncHelper;
+import com.cngame.gamesdklib.http.core.DownloadRequest;
 import com.cngame.gamesdklib.utils.FileUtil;
 import com.cngame.gamesdklib.utils.LogUtils;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.FilenameFilter;
-import java.io.IOException;
-import java.io.InputStream;
-import java.lang.reflect.Array;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import dalvik.system.DexClassLoader;
@@ -31,6 +24,7 @@ public final class SDKClassLoaderInitial
 {
     private Context context;
     private DexClassLoader sdkClassLoader;
+    private File sdkJarDir;
     private String sdkJarPaths;
     private File optDir;
     private File sdkSoDir;
@@ -47,27 +41,51 @@ public final class SDKClassLoaderInitial
         requestPlugins();
     }
 
-    public DexClassLoader getSDKClassLoader() throws Exception
+    private void requestPlugins()
     {
-//        requestPlugins();
-//        prepareFiles();
-//
-//        sdkClassLoader = new DexClassLoader(
-//                sdkJarPaths,
-//                optDir.getAbsolutePath(),
-//                sdkSoDir.getAbsolutePath(),
-//                context.getClass().getClassLoader());
+        HttpSyncHelper hp = new HttpSyncHelper();
+        Object obj = hp.invoke("http://192.168.202.64:8080/amuro/test/plugin_query", Object.class);
 
-        return sdkClassLoader;
+        List<String> urls = new ArrayList<String>();
+        for (Object o : (JSONArray) obj)
+        {
+            urls.add((String) o);
+        }
+
+        for (String downloadUrl : urls)
+        {
+            downloadPlugins(downloadUrl);
+        }
+
+        prepareFiles();
+
+        sdkClassLoader = new DexClassLoader(
+                sdkJarPaths,
+                optDir.getAbsolutePath(),
+                sdkSoDir.getAbsolutePath(),
+                context.getClass().getClassLoader());
+
+        LogUtils.e("");
     }
 
-    File sdkJarDir;
+    private void downloadPlugins(String downloadUrl)
+    {
+        sdkJarDir = FileUtil.getDir(
+                Environment.getExternalStorageDirectory() + "/gamesdk/core/");
+
+        String[] strs = downloadUrl.split("/");
+        String fileName = strs[strs.length - 1];
+        String pathName = sdkJarDir + "/" + fileName;
+
+        File file = new File(pathName);
+
+        DownloadRequest downloadRequest = new DownloadRequest(downloadUrl, null, file);
+        downloadRequest.execute();
+
+    }
+
     private void prepareFiles()
     {
-
-//        File sdkJarDir = FileUtil.getDir(
-//                Environment.getExternalStorageDirectory() + "/gamesdk/core/");
-
         String[] jarPaths = sdkJarDir.list(new FilenameFilter()
         {
             @Override
@@ -77,14 +95,14 @@ public final class SDKClassLoaderInitial
             }
         });
 
-        if(jarPaths != null || jarPaths.length != 0)
+        if (jarPaths != null || jarPaths.length != 0)
         {
-            if(pluginList == null)
+            if (pluginList == null)
             {
                 pluginList = new ArrayList<String>();
             }
 
-            for(String pluginJarName : jarPaths)
+            for (String pluginJarName : jarPaths)
             {
                 String pluginName = pluginJarName.split("\\.")[0].replaceAll("_", "");
 
@@ -92,12 +110,11 @@ public final class SDKClassLoaderInitial
                 pluginList.add(pluginName);
             }
 
-            for(String str : pluginList)
+            for (String str : pluginList)
             {
                 LogUtils.e(str);
             }
         }
-
 
 
         sdkJarPaths = "";
@@ -122,113 +139,26 @@ public final class SDKClassLoaderInitial
                 context.getFilesDir() + "/gamesdk/core/");
     }
 
-    private void requestPlugins()
+    public DexClassLoader getSDKClassLoader() throws Exception
     {
-        HttpHelper hp = new HttpHelper();
-        hp.invokeUrl("http://192.168.202.64:8080/amuro/test/plugin_query", new HttpHelper.OnResponseListener()
-        {
-            @Override
-            public void onSuccess(Object obj)
-            {
-                List<String> urls = new ArrayList<String>();
-                for(Object o : (JSONArray)obj)
-                {
-                    urls.add((String)o);
-                }
-
-                for(String downloadUrl : urls)
-                {
-                    downloadPlugins(downloadUrl);
-                }
-
-                prepareFiles();
-
-                sdkClassLoader = new DexClassLoader(
-                        sdkJarPaths,
-                        optDir.getAbsolutePath(),
-                        sdkSoDir.getAbsolutePath(),
-                        context.getClass().getClassLoader());
-
-                LogUtils.e("");
-            }
-
-            @Override
-            public void onFailed(HttpError error)
-            {
-                LogUtils.e(error.getErrorMessage());
-            }
-        }, Object.class);
-    }
-
-    private void downloadPlugins(String downloadUrl)
-    {
-        FileOutputStream output = null;
-        try
-        {
-            URL url = new URL(downloadUrl);
-            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-
-            sdkJarDir = FileUtil.getDir(
-                    Environment.getExternalStorageDirectory() + "/gamesdk/core/");
-
-            String[] strs = downloadUrl.split("/");
-            String fileName = strs[strs.length - 1];
-            String pathName = sdkJarDir + "/" + fileName;
-
-            File file = new File(pathName);
-            InputStream input = conn.getInputStream();
-
-//            if (file.exists())
-//            {
-//                System.out.println("exits");
-//                return;
-//            }
-//            else
-//            {
-                file.createNewFile();//新建文件
-                output = new FileOutputStream(file);
-                //读取大文件
-                byte[] buffer = new byte[4 * 1024];
-                int len = 0;
-                while ((len = input.read(buffer)) != -1)
-                {
-                    output.write(buffer, 0, len);
-                }
-                output.flush();
-//            }
-        }
-        catch (Exception e)
-        {
-            e.printStackTrace();
-        }
-        finally
-        {
-            try
-            {
-                output.close();
-            }
-            catch (IOException e)
-            {
-                e.printStackTrace();
-            }
-        }
+        return sdkClassLoader;
     }
 
     public boolean isPluginExist(String pluginName)
     {
-        if(TextUtils.isEmpty(pluginName))
+        if (TextUtils.isEmpty(pluginName))
         {
             return false;
         }
 
-        if(pluginList == null || pluginList.size() == 0)
+        if (pluginList == null || pluginList.size() == 0)
         {
             return false;
         }
 
-        for(String plugN : pluginList)
+        for (String plugN : pluginList)
         {
-            if(plugN.equals(pluginName.toLowerCase()))
+            if (plugN.equals(pluginName.toLowerCase()))
             {
                 return true;
             }

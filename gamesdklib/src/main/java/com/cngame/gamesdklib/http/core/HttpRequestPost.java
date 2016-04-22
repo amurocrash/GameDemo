@@ -1,7 +1,4 @@
-package com.cngame.gamesdklib.http_async.core;
-
-import com.cngame.gamesdklib.http_async.urlParser.URLData;
-import com.cngame.gamesdklib.utils.LogUtils;
+package com.cngame.gamesdklib.http.core;
 
 import java.io.BufferedWriter;
 import java.io.OutputStream;
@@ -13,14 +10,9 @@ import java.util.Map;
  */
 public class HttpRequestPost extends HttpRequest
 {
-    public HttpRequestPost(URLData urlData)
+    public HttpRequestPost(String baseUrl, Map<String, String> paramMap, int responseType)
     {
-        super(urlData);
-    }
-
-    public HttpRequestPost(URLData urlData, Map<String, String> paramMap, OnHttpResponseListener httpListener)
-    {
-        super(urlData, paramMap, httpListener);
+        super(baseUrl, paramMap, responseType);
     }
 
     @Override
@@ -32,8 +24,7 @@ public class HttpRequestPost extends HttpRequest
     @Override
     protected String getUrl()
     {
-        LogUtils.e("url -> " + urlData.getUrl());
-        return urlData.getUrl();
+        return baseUrl;
     }
 
     @Override

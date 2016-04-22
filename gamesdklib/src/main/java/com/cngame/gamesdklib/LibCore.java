@@ -2,7 +2,6 @@ package com.cngame.gamesdklib;
 
 import android.content.Context;
 
-import com.cngame.gamesdklib.http_async.urlParser.URLDataInitiator;
 import com.cngame.gamesdklib.utils.SharedPreferManager;
 
 /**

@@ -1,4 +1,4 @@
-package com.cngame.gamesdklib.http_async.core;
+package com.cngame.gamesdklib.http.core;
 
 /**
  * Created by Amuro on 2016/3/8.

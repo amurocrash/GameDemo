@@ -24,6 +24,11 @@ public class SDKPluginManager
     private SDKClassLoaderInitial classLoaderInitial;
     private DexClassLoader classLoader;
 
+    /**
+     * don't do this in main thread
+     * @param context
+     * @throws Exception
+     */
     public void init(Context context) throws Exception
     {
         classLoaderInitial = new SDKClassLoaderInitial(context);

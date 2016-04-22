@@ -31,7 +31,7 @@
         android:id="@+id/bt4"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="no plugin"
+        android:text="logging"
         />
 
 </LinearLayout>

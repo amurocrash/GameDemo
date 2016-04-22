@@ -1,8 +1,7 @@
-package com.cngame.gamesdklib.http_async.core;
+package com.cngame.gamesdklib.http.core;
 
 import android.text.TextUtils;
 
-import com.cngame.gamesdklib.http_async.urlParser.URLData;
 import com.cngame.gamesdklib.utils.LogUtils;
 
 import java.util.Map;
@@ -12,14 +11,9 @@ import java.util.Map;
  */
 public class HttpRequestGet extends HttpRequest
 {
-    public HttpRequestGet(URLData urlData)
+    public HttpRequestGet(String baseUrl, Map<String, String> paramMap, int responseType)
     {
-        super(urlData);
-    }
-
-    public HttpRequestGet(URLData urlData, Map<String, String> paramMap, OnHttpResponseListener httpListener)
-    {
-        super(urlData, paramMap, httpListener);
+        super(baseUrl, paramMap, responseType);
     }
 
     @Override
@@ -31,7 +25,7 @@ public class HttpRequestGet extends HttpRequest
     @Override
     protected String getUrl()
     {
-        String url = urlData.getUrl();
+        String url = baseUrl;
 
         String params = generateParam();
 

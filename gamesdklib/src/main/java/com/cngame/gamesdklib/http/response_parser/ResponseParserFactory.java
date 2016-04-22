@@ -1,6 +1,6 @@
-package com.cngame.gamesdklib.http_async.response_parser;
+package com.cngame.gamesdklib.http.response_parser;
 
-import com.cngame.gamesdklib.http_async.urlParser.URLData;
+import com.cngame.gamesdklib.http.core.HttpConstants;
 
 public class ResponseParserFactory<T>
 {
@@ -9,7 +9,7 @@ public class ResponseParserFactory<T>
 	{
 		switch(responseType)
 		{
-		case URLData.JSON:
+		case HttpConstants.JSON:
 			return new JsonParser<T>();
 			
 		default :

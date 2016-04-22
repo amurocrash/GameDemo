@@ -55,14 +55,7 @@ public class MainActivity extends Activity
             @Override
             public void onClick(View v)
             {
-                try
-                {
-                    GameSDKCore.invokeModule("SDKTesting", MainActivity.this);
-                }
-                catch (Exception e)
-                {
-                    ToastUtils.show(MainActivity.this, "模块加载失败\n" + e.getMessage());
-                }
+                doLogging();
             }
         });
     }
@@ -117,6 +110,18 @@ public class MainActivity extends Activity
         try
         {
             GameSDKCore.invokeModule("SDKAdvertisement", this);
+        }
+        catch (Exception e)
+        {
+            ToastUtils.show(MainActivity.this, "模块加载失败\n" + e.getMessage());
+        }
+    }
+
+    private void doLogging()
+    {
+        try
+        {
+            GameSDKCore.invokeModule("SDKLogging", this);
         }
         catch (Exception e)
         {

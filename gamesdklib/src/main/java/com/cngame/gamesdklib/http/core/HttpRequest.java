@@ -1,15 +1,11 @@
-package com.cngame.gamesdklib.http_async.core;
+package com.cngame.gamesdklib.http.core;
 
 
-import android.os.Handler;
-import android.os.Looper;
 import android.text.TextUtils;
 
-import com.cngame.gamesdklib.http_async.constants.HttpConstants;
-import com.cngame.gamesdklib.http_async.response_parser.BaseEntity;
-import com.cngame.gamesdklib.http_async.response_parser.IResponseParser;
-import com.cngame.gamesdklib.http_async.response_parser.ResponseParserFactory;
-import com.cngame.gamesdklib.http_async.urlParser.URLData;
+import com.cngame.gamesdklib.http.response_parser.IResponseParser;
+import com.cngame.gamesdklib.http.response_parser.ResponseParserFactory;
+import com.cngame.gamesdklib.http.utils.BaseEntityUtils;
 import com.cngame.gamesdklib.utils.LogUtils;
 
 import java.io.BufferedReader;
@@ -22,67 +18,35 @@ import java.util.Map;
 /**
  * Created by Amuro on 2016/3/8.
  */
-public abstract class HttpRequest implements Runnable
+public abstract class HttpRequest
 {
-    public interface OnHttpResponseListener
-    {
-        public void onSucceed(BaseEntity baseEntity);
-        public void onFailed(HttpError error);
-    }
-
-    private OnHttpResponseListener httpListener;
-
-    private void notifySucceed(final BaseEntity baseEntity)
-    {
-        if(httpListener != null)
-        {
-            httpListener.onSucceed(baseEntity);
-        }
-    }
-
-    private void notifyFailed(final HttpError error)
-    {
-        if(httpListener != null)
-        {
-            httpListener.onFailed(error);
-        }
-    }
-
     protected HttpURLConnection conn;
-    protected URLData urlData;
+    protected String baseUrl;
     protected Map<String, String> paramMap;
+    protected int responseType;
 
-    public HttpRequest(URLData urlData)
+    public HttpRequest(String baseUrl, Map<String, String> paramMap, int responseType)
     {
-        this(urlData, null, null);
-    }
-
-    public HttpRequest(URLData urlData, Map<String, String> paramMap, OnHttpResponseListener httpListener)
-    {
-        this.urlData = urlData;
+        this.baseUrl = baseUrl;
         this.paramMap = paramMap;
-        this.httpListener = httpListener;
+        this.responseType = responseType;
     }
 
     protected abstract String getMethod();
     protected abstract String getUrl();
     protected abstract void sendData() throws Exception;
 
-    @Override
-    public void run()
+    public BaseEntity execute()
     {
         try
         {
             initConn();
             sendData();
-            disposeResponse();
+            return disposeResponse();
         }
         catch (Exception e)
         {
-            notifyFailed(
-                    new HttpError(HttpConstants.ERROR_CODE_LOCAL,
-                            "local error: " + e.getClass() + " --- " + e.getMessage())
-            );
+            return BaseEntityUtils.getLoaclFailedBaseEntity("local error: " + e.getClass() + " --- " + e.getMessage());
         }
         finally
         {
@@ -124,7 +88,7 @@ public abstract class HttpRequest implements Runnable
         return sb.toString();
     }
 
-    protected void disposeResponse() throws Exception
+    protected BaseEntity disposeResponse() throws Exception
     {
         int responseCode = conn.getResponseCode();
         if (responseCode == 200)
@@ -143,31 +107,28 @@ public abstract class HttpRequest implements Runnable
             LogUtils.e("response: " + sb.toString());
             in.close();
 
-            parseResponse(sb.toString());
+            return parseResponse(sb.toString());
 
         }
         else
         {
-            notifyFailed(
-                    new HttpError(responseCode, "Server error")
-            );
+            return BaseEntityUtils.getFailedBaseEntity(responseCode, "Server error");
         }
     }
 
-    protected void parseResponse(String response) throws Exception
+    protected BaseEntity parseResponse(String response) throws Exception
     {
         IResponseParser<BaseEntity> parser =
-                ResponseParserFactory.getResponseParser(urlData.getResponseType());
+                ResponseParserFactory.getResponseParser(responseType);
         BaseEntity baseEntity = parser.parseResponse(response, BaseEntity.class);
 
         if(baseEntity != null)
         {
-            notifySucceed(baseEntity);
+            return baseEntity;
         }
         else
         {
-            notifyFailed(new HttpError(
-                    HttpConstants.ERROR_CODE_LOCAL, "unable to parse response"));
+            return BaseEntityUtils.getLoaclFailedBaseEntity("unable to parse response");
         }
     }
 
@@ -178,4 +139,5 @@ public abstract class HttpRequest implements Runnable
             conn.disconnect();
         }
     }
+
 }

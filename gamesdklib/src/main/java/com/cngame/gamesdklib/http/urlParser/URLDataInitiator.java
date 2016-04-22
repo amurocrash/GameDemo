@@ -1,4 +1,4 @@
-package com.cngame.gamesdklib.http_async.urlParser;
+package com.cngame.gamesdklib.http.urlParser;
 
 import java.util.ArrayList;
 import java.util.List;

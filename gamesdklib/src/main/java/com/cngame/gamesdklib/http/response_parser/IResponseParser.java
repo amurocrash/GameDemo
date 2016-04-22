@@ -1,4 +1,4 @@
-package com.cngame.gamesdklib.http_async.response_parser;
+package com.cngame.gamesdklib.http.response_parser;
 
 public interface IResponseParser<T>
 {
