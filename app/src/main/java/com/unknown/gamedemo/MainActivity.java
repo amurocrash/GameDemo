@@ -1,10 +1,12 @@
 package com.unknown.gamedemo;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 
 import com.cngame.GameSDKCore;
+import com.cngame.gamesdkcore.shorcut.activity.ShortcutActivity;
 import com.cngame.gamesdklib.IGameInterface;
 import com.cngame.gamesdklib.utils.ToastUtils;
 
@@ -56,6 +58,17 @@ public class MainActivity extends Activity
             public void onClick(View v)
             {
                 doLogging();
+            }
+        });
+
+        findViewById(R.id.bt5).setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                Intent intent =
+                        new Intent(MainActivity.this, ShortcutActivity.class);
+                startActivity(intent);
             }
         });
     }

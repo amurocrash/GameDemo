@@ -4,20 +4,21 @@ import android.content.Context;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.cngame.gamesdklib.utils.DisplayUtils;
 
-import java.util.List;
-
 /**
  * Created by Amuro on 2016/4/18.
  */
 public class ShortcutView extends LinearLayout
 {
-    public static final int id_bt_pay1 = 0x00000001;
+    public static final int id_bt_start = 0x00000001;
+    public static final int id_tv_progress = 0x00000002;
+    public static final int id_bt_pause = 0x00000003;
 
     public ShortcutView(Context context)
     {
@@ -63,7 +64,21 @@ public class ShortcutView extends LinearLayout
         TextView textView = new TextView(getContext());
         textView.setText("推荐游戏");
 
+        Button buttonStart = new Button(getContext());
+        buttonStart.setId(id_bt_start);
+        buttonStart.setText("download");
+
+        Button buttonPause = new Button(getContext());
+        buttonPause.setId(id_bt_pause);
+        buttonPause.setText("pause");
+
+        TextView textViewProgress = new TextView(getContext());
+        textViewProgress.setId(id_tv_progress);
+
         linearLayoutRoot.addView(textView);
+        linearLayoutRoot.addView(buttonStart);
+        linearLayoutRoot.addView(buttonPause);
+        linearLayoutRoot.addView(textViewProgress);
 
         return linearLayoutRoot;
     }
