@@ -25,6 +25,41 @@ dependencies {
     compile project(':gamesdklib')
 }
 
+
+
+
+
+//def sdk_classes = file(buildDir).absolutePath + "/intermediates/classes/debug"
+//def sdk_libs = file(buildDir).absolutePath + "/intermediates/bundles/debug/libs"
+//
+//def jarToDexs = { String pathJar, String pathDex ->
+//    println("jarToDexs:" + pathJar + ";" + pathDex)
+//    project.exec {
+//        commandLine(project.dx, '--dex', '--output', pathDex, pathJar)
+//    }
+//
+//}
+//
+//def archiveJarName = 'result.jar'
+//def archiveDexName = 'classes.jar'
+//def sdk_target = file(buildDir).absolutePath + "/target"
+//def sdk_target_core = sdk_target + '/core'
+//
+//task jarSDK(type: Jar) {
+//    from(sdk_classes) {
+//        include('**/*')
+//    }
+//    archiveName = archiveJarName
+//    destinationDir = file(sdk_target_core)
+//    doLast {
+//        project.delete(sdk_libs+ "/" + 'android-support-v4.jar');
+//        jarToDexs(destinationDir.absolutePath + "/" + archiveJarName + "," + sdk_libs, destinationDir.absolutePath + "/" + archiveDexName)
+//        project.delete(destinationDir.absolutePath + "/" + archiveJarName);
+//    }
+//}
+//task createSDK(dependsOn: ['jarSDK']) {
+//}
+
 task clearJar(type: Delete) {
     delete 'build/outputs/sdk_marketing_base.jar'
 }
