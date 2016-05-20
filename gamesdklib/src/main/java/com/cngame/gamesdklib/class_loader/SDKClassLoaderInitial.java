@@ -44,7 +44,7 @@ public final class SDKClassLoaderInitial
     private void requestPlugins()
     {
         HttpSyncHelper hp = new HttpSyncHelper();
-        Object obj = hp.invoke("http://192.168.202.64:8080/amuro/test/plugin_query", Object.class);
+        Object obj = hp.invoke("http://172.29.14.139:8080/amuro/test/plugin_query", Object.class);
 
         List<String> urls = new ArrayList<String>();
         for (Object o : (JSONArray) obj)

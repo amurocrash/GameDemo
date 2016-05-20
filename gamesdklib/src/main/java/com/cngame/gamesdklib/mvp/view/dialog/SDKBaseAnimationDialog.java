@@ -4,6 +4,7 @@ import android.content.Context;
 
 import com.cngame.gamesdklib.mvp.view.animator.BaseAnimatorSet;
 
+@Deprecated
 public abstract class SDKBaseAnimationDialog extends SDKBaseDialog
 {
 

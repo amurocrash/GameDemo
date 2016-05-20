@@ -3,7 +3,7 @@ package com.cngame.gamesdklib.class_loader;
 import android.content.Context;
 
 import com.cngame.gamesdklib.IGameInterface;
-import com.cngame.gamesdklib.uniform_interface.IUniformInterface;
+import com.cngame.gamesdklib.plugin.IPlugin;
 
 import java.lang.reflect.Method;
 import java.util.Map;
@@ -57,9 +57,12 @@ public class SDKPluginManager
                 "com.gamesdk." + pluginName.toLowerCase() + "." + pluginName + "Interface";
         Class<?> pluginClass = classLoader.loadClass(pluginInterfaceName);
 
-        Method method = pluginClass.getMethod(
-                "invoke", Context.class, Map.class, IGameInterface.class);
-        method.invoke(pluginClass.newInstance(), context, paramMap, resultListener);
+        IPlugin plugin = (IPlugin) pluginClass.newInstance();
+        plugin.invoke(context, paramMap, resultListener);
+
+//        Method method = pluginClass.getMethod(
+//                "invoke", Context.class, Map.class, IGameInterface.class);
+//        method.invoke(pluginClass.newInstance(), context, paramMap, resultListener);
         
     }
 

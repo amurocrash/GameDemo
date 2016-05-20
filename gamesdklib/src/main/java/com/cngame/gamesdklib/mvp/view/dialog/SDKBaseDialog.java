@@ -19,6 +19,7 @@ import com.cngame.gamesdklib.mvp.view.animator.BaseAnimatorSet;
 import com.cngame.gamesdklib.utils.DisplayUtils;
 import com.nineoldandroids.animation.Animator;
 
+@Deprecated
 public abstract class SDKBaseDialog extends Dialog
 {
     protected Context context;
@@ -80,7 +81,12 @@ public abstract class SDKBaseDialog extends Dialog
         linearLayoutContent = new LinearLayout(context);
         linearLayoutContent.setOrientation(LinearLayout.VERTICAL);
         linearLayoutContent.setBackgroundColor(Color.WHITE);
-        linearLayoutContent.addView(onCreateContentView());
+
+        View contentView = onCreateContentView();
+        if(contentView != null)
+        {
+            linearLayoutContent.addView(onCreateContentView());
+        }
 
         linearLayoutRoot.addView(linearLayoutContent);
 
@@ -89,7 +95,7 @@ public abstract class SDKBaseDialog extends Dialog
 
     }
 
-    protected abstract View onCreateContentView();
+    protected abstract LinearLayout onCreateContentView();
 
     @Override
     public void onAttachedToWindow()

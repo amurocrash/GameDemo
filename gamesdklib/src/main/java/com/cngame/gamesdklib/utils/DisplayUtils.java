@@ -1,8 +1,11 @@
 package com.cngame.gamesdklib.utils;
 
 import android.content.Context;
+import android.content.res.Configuration;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
+import android.view.MotionEvent;
+import android.view.View;
 
 /**
  * Created by Amuro on 2016/3/25.
@@ -53,6 +56,11 @@ public class DisplayUtils
         return (int) (pxValue / fontScale + 0.5f);
     }
 
+    public static Configuration getConfiguration(Context context)
+    {
+        return context.getResources().getConfiguration();
+    }
+
     public static int getStatusBar(Context context)
     {
         int statusBarHeight = 0;
@@ -88,5 +96,19 @@ public class DisplayUtils
             }
         }
         return false;
+    }
+
+    public static boolean inRangeOfView(View view, MotionEvent ev)
+    {
+        int[] location = new int[2];
+        view.getLocationOnScreen(location);
+        int x = location[0];
+        int y = location[1];
+        if (ev.getX() < x || ev.getX() > (x + view.getWidth()) || ev.getY() < y
+                || ev.getY() > (y + view.getHeight()))
+        {
+            return false;
+        }
+        return true;
     }
 }

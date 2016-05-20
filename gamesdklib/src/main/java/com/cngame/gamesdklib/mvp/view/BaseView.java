@@ -1,6 +1,7 @@
 package com.cngame.gamesdklib.mvp.view;
 
 import android.content.Context;
+import android.content.res.Configuration;
 import android.graphics.Color;
 import android.util.AttributeSet;
 import android.view.Gravity;
@@ -9,12 +10,15 @@ import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 
 import com.cngame.gamesdklib.utils.DisplayUtils;
+import com.cngame.gamesdklib.utils.LogUtils;
 
 /**
  * Created by Amuro on 2016/4/15.
  */
 public abstract class BaseView extends LinearLayout
 {
+    protected boolean isLandscape;
+
     public BaseView(Context context)
     {
         super(context);
@@ -35,21 +39,12 @@ public abstract class BaseView extends LinearLayout
 
     protected void init()
     {
-        FrameLayout.LayoutParams lParams = new FrameLayout.LayoutParams(
-                (int)(DisplayUtils.getScreenWidth(getContext()) * 0.9),
-                FrameLayout.LayoutParams.WRAP_CONTENT);
-        lParams.gravity = Gravity.CENTER;
-        this.setLayoutParams(lParams);
-        this.setBackgroundColor(Color.parseColor("#FFFFFF"));
-        this.setPadding(20, 20, 20, 20);
-        this.setOrientation(LinearLayout.VERTICAL);
+        isLandscape = DisplayUtils.getConfiguration(getContext()).orientation ==
+                    Configuration.ORIENTATION_LANDSCAPE;
 
-        if(getSelfView() != null)
-        {
-            this.addView(getSelfView());
-        }
+        initSelfView();
     }
 
-    protected abstract View getSelfView();
+    protected abstract void initSelfView();
 
 }
